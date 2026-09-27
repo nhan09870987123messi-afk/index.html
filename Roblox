@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Cloud Phone</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial;margin:0}
+body{
+    background:#080d18;
+    color:white;
+    min-height:100vh;
+}
+header{
+    height:65px;
+    background:#111a2d;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    border-bottom:1px solid #26334f;
+}
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+.user{
+    background:#1d2940;
+    padding:9px 15px;
+    border-radius:20px;
+}
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px 20px;
+}
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+.add{
+    background:#1683ff;
+    color:white;
+    border:0;
+    border-radius:10px;
+    padding:12px 18px;
+    cursor:pointer;
+    font-weight:bold;
+}
+.devices{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+.card{
+    background:#111a2d;
+    border:1px solid #26334f;
+    border-radius:15px;
+    padding:20px;
+}
+.phone-icon{
+    height:130px;
+    background:#080d18;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:65px;
+    margin-bottom:15px;
+}
+.name{
+    font-size:20px;
+    font-weight:bold;
+}
+.online{
+    color:#22c55e;
+    margin:8px 0 15px;
+}
+.offline{
+    color:#94a3b8;
+    margin:8px 0 15px;
+}
+.actions{
+    display:flex;
+    gap:8px;
+}
+.actions button{
+    flex:1;
+    padding:10px;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+}
+.start{background:#16a34a}
+.stop{background:#dc2626}
+.open{background:#2563eb}
+
+/* PHONE */
+
+#phoneWindow{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+.phone{
+    width:350px;
+    height:680px;
+    background:#000;
+    border:7px solid #202020;
+    border-radius:38px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 0 60px #000;
+}
+
+.camera{
+    position:absolute;
+    top:9px;
+    left:50%;
+    transform:translateX(-50%);
+    width:95px;
+    height:24px;
+    background:#000;
+    border-radius:20px;
+    z-index:10;
+}
+
+.status{
+    height:42px;
+    padding:12px 16px;
+    display:flex;
+    justify-content:space-between;
+    position:absolute;
+    width:100%;
+    z-index:5;
+}
+
+.home{
+    height:100%;
+    padding:70px 20px;
+    background:linear-gradient(145deg,#15254a,#09203b);
+}
+
+.clock{
+    text-align:center;
+    font-size:45px;
+    margin-bottom:45px;
+}
+
+.apps{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:25px 12px;
+}
+
+.app{
+    text-align:center;
+    cursor:pointer;
+}
+
+.appIcon{
+    width:58px;
+    height:58px;
+    margin:auto;
+    border-radius:15px;
+    background:white;
+    color:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+}
+
+.app span{
+    display:block;
+    margin-top:6px;
+    font-size:11px;
+}
+
+.bottom{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:55px;
+    background:rgba(0,0,0,.7);
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.bottom button{
+    background:none;
+    border:0;
+    color:white;
+    font-size:22px;
+}
+
+#roblox{
+    display:none;
+    height:100%;
+    padding-top:45px;
+    background:#111;
+}
+
+.robloxHead{
+    background:#202020;
+    padding:18px;
+    font-size:20px;
+}
+
+.robloxBody{
+    height:80%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.robloxLogo{
+    font-size:75px;
+}
+
+.play{
+    margin-top:20px;
+    padding:14px 55px;
+    background:#00a2ff;
+    color:white;
+    border:0;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.close{
+    position:absolute;
+    top:15px;
+    right:20px;
+    background:#ef4444;
+    color:white;
+    border:0;
+    border-radius:8px;
+    padding:8px 12px;
+    z-index:200;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">☁️ MY CLOUD PHONE</div>
+    <div class="user">👤 Guest</div>
+</header>
+
+<div class="container">
+
+    <div class="top">
+        <h1>Điện thoại của tôi</h1>
+        <button class="add" onclick="addPhone()">＋ Tạo máy</button>
+    </div>
+
+    <div class="devices" id="devices"></div>
+
+</div>
+
+
+<!-- CỬA SỔ ĐIỆN THOẠI -->
+
+<div id="phoneWindow">
+
+    <button class="close" onclick="closePhone()">✕</button>
+
+    <div class="phone">
+
+        <div class="camera"></div>
+
+        <div class="status">
+            <span id="time">12:00</span>
+            <span>📶 🔋 100%</span>
+        </div>
+
+        <!-- HOME -->
+
+        <div class="home" id="home">
+
+            <div class="clock" id="clock">
+                12:00
+            </div>
+
+            <div class="apps">
+
+                <div class="app" onclick="openRoblox()">
+                    <div class="appIcon">🎮</div>
+                    <span>Roblox</span>
+                </div>
+
+                <div class="app">
+                    <div class="appIcon">🌐</div>
+                    <span>Chrome</span>
+                </div>
+
+                <div class="app">
+                    <div class="appIcon">📁</div>
+                    <span>Files</span>
+                </div>
+
+                <div class="app">
+                    <div class="appIcon">⚙️</div>
+                    <span>Cài đặt</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ROBLOX -->
+
+        <div id="roblox">
+
+            <div class="robloxHead">
+                Roblox
+            </div>
+
+            <div class="robloxBody">
+
+                <div class="robloxLogo">🎮</div>
+
+                <h2>ROBLOX</h2>
+
+                <p id="gameStatus">Sẵn sàng</p>
+
+                <button class="play" onclick="playGame()">
+                    ▶ PLAY
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="bottom">
+
+            <button onclick="goBack()">◀</button>
+
+            <button onclick="goHome()">●</button>
+
+            <button>▢</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let phones = [
+    {
+        id:1,
+        name:"Cloud Phone #1",
+        online:false
+    }
+];
+
+let currentPhone = null;
+
+
+/* HIỂN THỊ MÁY */
+
+function render(){
+
+    let box=document.getElementById("devices");
+
+    box.innerHTML="";
+
+    phones.forEach(phone=>{
+
+        let status=phone.online
+            ? `<div class="online">● Đang hoạt động</div>`
+            : `<div class="offline">● Đang tắt</div>`;
+
+        box.innerHTML+=`
+
+        <div class="card">
+
+            <div class="phone-icon">📱</div>
+
+            <div class="name">
+                ${phone.name}
+            </div>
+
+            ${status}
+
+            <div class="actions">
+
+                ${
+                    phone.online
+
+                    ? `<button class="stop"
+                        onclick="stopPhone(${phone.id})">
+                        Dừng
+                       </button>`
+
+                    : `<button class="start"
+                        onclick="startPhone(${phone.id})">
+                        Bật máy
+                       </button>`
+                }
+
+                <button class="open"
+                    onclick="openPhone(${phone.id})">
+                    Mở máy
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+}
+
+
+/* TẠO MÁY */
+
+function addPhone(){
+
+    let id=phones.length+1;
+
+    phones.push({
+        id:id,
+        name:"Cloud Phone #"+id,
+        online:false
+    });
+
+    render();
+}
+
+
+/* BẬT */
+
+function startPhone(id){
+
+    let phone=phones.find(x=>x.id===id);
+
+    phone.online=true;
+
+    render();
+}
+
+
+/* TẮT */
+
+function stopPhone(id){
+
+    let phone=phones.find(x=>x.id===id);
+
+    phone.online=false;
+
+    render();
+}
+
+
+/* MỞ */
+
+function openPhone(id){
+
+    let phone=phones.find(x=>x.id===id);
+
+    if(!phone.online){
+
+        alert("Hãy bật máy trước!");
+
+        return;
+    }
+
+    currentPhone=id;
+
+    document.getElementById("phoneWindow").style.display="flex";
+
+    goHome();
+}
+
+
+/* ĐÓNG */
+
+function closePhone(){
+
+    document.getElementById("phoneWindow").style.display="none";
+}
+
+
+/* ROBLOX */
+
+function openRoblox(){
+
+    document.getElementById("home").style.display="none";
+
+    document.getElementById("roblox").style.display="block";
+}
+
+
+/* PLAY */
+
+function playGame(){
+
+    document.getElementById("gameStatus").innerText=
+        "🎮 Game đang chạy...";
+
+}
+
+
+/* HOME */
+
+function goHome(){
+
+    document.getElementById("roblox").style.display="none";
+
+    document.getElementById("home").style.display="block";
+}
+
+
+/* BACK */
+
+function goBack(){
+
+    goHome();
+}
+
+
+/* GIỜ */
+
+function updateTime(){
+
+    let d=new Date();
+
+    let h=String(d.getHours()).padStart(2,"0");
+
+    let m=String(d.getMinutes()).padStart(2,"0");
+
+    document.getElementById("time").innerText=
+        h+":"+m;
+
+    document.getElementById("clock").innerText=
+        h+":"+m;
+}
+
+setInterval(updateTime,1000);
+
+updateTime();
+
+render();
+
+</script>
+
+</body>
+</html>
